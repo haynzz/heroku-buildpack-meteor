@@ -8,6 +8,18 @@ CACHE_DIR=$2
 
 export PATH=$PATH:$HOME/.meteor/
 
+#Install node
+# Download node from Heroku's S3 mirror of nodejs.org/dist
+status "Downloading and installing node"
+node_url="http://s3pository.heroku.com/node/v$node_version/node-v$node_version-linux-x64.tar.gz"
+curl $node_url -s -o - | tar xzf - -C $build_dir
+
+# Move node (and npm) into ./vendor and make them executable
+mkdir -p $build_dir/vendor
+mv $build_dir/node-v$node_version-linux-x64 $build_dir/vendor/node
+chmod +x $build_dir/vendor/node/bin/*
+PATH=$build_dir/vendor/node/bin:$PATH
+
 # Install Meteor
 curl https://install.meteor.com/ | sh
 # Go to Meteor project directory
